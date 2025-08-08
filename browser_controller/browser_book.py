@@ -4,7 +4,7 @@ from browser_controller.browser_session import start_browser_session
 from browser_controller.browser_utils import solve_captcha
 
 
-def book_tickets(train_number, data, page, retry_count = 4):
+def book_tickets(train_number, data, page=None, retry_count = 4):
     if page is None:
         page = start_browser_session()
     if 'pgui' not in page.url:
