@@ -1,0 +1,28 @@
+# 🔧 Python cache
+__pycache__/
+
+# 🧪 Virtual environment
+.venv/
+
+# 🧍 Personal or sensitive files
+utils/config.json
+temp.py
+test.py
+
+# 🧠 OCR models and session data
+utils/paddleocr_models/
+.chrome/
+
+# 🧪 IDE/editor configs
+.idea/
+
+# 📄 Logs, temp files, and misc
+*.log
+*.tmp
+*.bak
+*.swp
+*.orig
+
+# 🖼️ OS-specific
+.DS_Store
+Thumbs.db
