@@ -6,6 +6,8 @@ from threading import Thread
 
 from playwright.sync_api import sync_playwright, Browser, BrowserContext, Page
 
+from utils.variables import js_filter
+
 # 🚀 Configuration
 CHROME_PATH = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 USER_DATA_DIR = os.getcwd() + "/.chrome/user_profile"
@@ -124,6 +126,7 @@ def start_browser_session() -> Page:
     _context = get_or_create_context()
     page = ensure_page_alive(_context)
 
+    page.evaluate(js_filter)
     return page
 
 def stop_browser_session():
