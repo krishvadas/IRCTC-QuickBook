@@ -1,0 +1,23 @@
+{
+    "username": "username",
+    "password": "password",
+    "upi_id": "your_upi_id",
+    "saved_passengers": [
+        {
+            "name": "passenger_1_name",
+            "age": "XX",
+            "sex": "M"
+        },
+        {
+            "name": "passenger_2_name",
+            "age": "XX",
+            "sex": "F"
+        }
+    ],
+    "source": "MGR CHENNAI CTL - MAS (CHENNAI)",
+    "destination": "MORAPPUR - MAP",
+    "coach": "Sleeper (SL)",
+    "quota": "GENERAL",
+    "date": "dd/mm/yyyy",
+    "train_number": "XXXXX"
+}
