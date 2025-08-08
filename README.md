@@ -20,11 +20,22 @@ Ultra-fast, GUI-driven automation tool for booking Indian Railways tickets via I
 git clone https://github.com/krishvadas/IRCTC-QuickBook.git
 cd IRCTC-QuickBook
 ```
-### 2. Install dependencies
+### 2. Create and activate virtual environment
+If you're on windows
+```bash
+python -m venv .venv
+.venv/scripts/activate
+```
+If you're on linux
+```bash 
+python3 -m venv .venv
+source venv/bin/activate
+```
+### 3. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
-### 3. Configure your booking details
+### 4. Configure your booking details
 Copy the template and fill in your credentials:
 
 ```bash
