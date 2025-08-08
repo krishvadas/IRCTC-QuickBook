@@ -134,14 +134,14 @@ def attach_station_search(entry, parent, station_pool):
         search_enabled = False
         box.place_forget()
 
-    def select_station():
+    def select_station(event):
         nonlocal selected_index
         if selected_index == -1 and box.curselection():
             selected_index = box.curselection()[0]
         if 0 <= selected_index < box.size():
             finalize_selection(selected_index)
 
-    def mouse_select():
+    def mouse_select(event):
         if box.curselection():
             finalize_selection(box.curselection()[0])
 

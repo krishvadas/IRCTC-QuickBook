@@ -80,7 +80,7 @@ class IRCTCLauncher(ctk.CTk):
         if self.config_data.get("train_number"):
             self.train_number_entry.insert(0, self.config_data["train_number"])
 
-        def enforce_numeric_limit():
+        def enforce_numeric_limit(event):
             text = self.train_number_entry.get()
             if not text.isdigit():
                 self.train_number_entry.delete(0, "end")
