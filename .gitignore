@@ -10,7 +10,6 @@ temp.py
 test.py
 
 # 🧠 OCR models and session data
-utils/paddleocr_models/
 .chrome/
 
 # 🧪 IDE/editor configs
