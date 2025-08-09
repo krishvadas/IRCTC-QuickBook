@@ -1,10 +1,10 @@
+print("💖 Launching app, please wait...")
 import argparse
 from gui import IRCTCLauncher
 from browser_controller.browser_book import book_tickets
 from utils.config_loader import load_config
 
 def run_gui():
-    print("💖 Launching app, please wait...")
     app = IRCTCLauncher()
     app.mainloop()
 
