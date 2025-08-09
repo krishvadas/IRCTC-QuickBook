@@ -14,6 +14,10 @@ test.py
 
 # 🧪 IDE/editor configs
 .idea/
+.github
+build
+dist
+output
 
 # 📄 Logs, temp files, and misc
 *.log
@@ -21,6 +25,7 @@ test.py
 *.bak
 *.swp
 *.orig
+main.spec
 
 # 🖼️ OS-specific
 .DS_Store
