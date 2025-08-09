@@ -131,7 +131,7 @@ def start_browser_session() -> Page:
     _context = get_or_create_context()
     page = ensure_page_alive(_context)
 
-    page.evaluate(js_filter)
+    page.add_init_script(js_filter)
     return page
 
 def stop_browser_session():
