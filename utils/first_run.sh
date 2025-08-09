@@ -8,6 +8,3 @@ source .venv/bin/activate
 
 echo "📦 Installing requirements..."
 pip install -r requirements.txt
-
-echo "🚀 Starting app..."
-python main.py
