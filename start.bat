@@ -2,8 +2,8 @@
 REM Check if .chrome folder exists
 IF NOT EXIST ".venv" (
     echo First run detected. Executing setup...
-    start utils\first_run.bat
+    call utils\first_run.bat
 )
 
-.venv/scripts/activate
+.venv/scripts/activate.bat
 python main.py
