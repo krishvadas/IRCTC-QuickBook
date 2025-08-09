@@ -4,8 +4,8 @@
     "upi_id": "your_upi_id",
     "saved_passengers": [
         {
-            "name": "",
-            "age": "",
+            "name": "passenger_name",
+            "age": "01",
             "sex": "M"
         }
     ],
