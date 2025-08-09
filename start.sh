@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# Check if .chrome folder exists
+# Check if .venv exists
 if [ ! -d ".venv" ]; then
     echo "⚡ First run detected. Executing setup..."
-    bash utils/first_run.sh
+    source utils/first_run.sh
 fi
 
-source venv/bin/activate
+# Activate and run
+source .venv/bin/activate
 python main.py

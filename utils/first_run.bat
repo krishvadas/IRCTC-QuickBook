@@ -1,4 +1,12 @@
+@echo off
+echo [*] Creating virtual environment...
 python -m venv .venv
-.venv/scripts/activate.bat
+
+echo [>] Activating virtual environment...
+call .venv\Scripts\activate.bat
+
+echo [+] Installing requirements...
 pip install -r requirements.txt
+
+echo [✓] Starting app...
 python main.py
