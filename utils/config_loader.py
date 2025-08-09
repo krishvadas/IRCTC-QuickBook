@@ -1,18 +1,21 @@
 import json
 import os
+from utils.variables import CONFIG_TEMPLATE
 
 CONFIG_FILE = "utils/config.json"
 TEMPLATE_FILE = "utils/config.template.json"
 
 def load_config():
-    if not os.path.exists(CONFIG_FILE):
-        with open(TEMPLATE_FILE, "r") as src, open(CONFIG_FILE, "w") as dst:
-            dst.write(src.read())
-        print("⚠️ Created config.json from template. Please update with real credentials.")
+    try:
+        if not os.path.exists(CONFIG_FILE):
+            with open(TEMPLATE_FILE, "r") as src, open(CONFIG_FILE, "w") as dst:
+                dst.write(src.read())
+            print("⚠️ Created config.json from template. Please update with real credentials.")
 
-    with open(CONFIG_FILE, "r") as f:
-        return json.load(f)
-
+        with open(CONFIG_FILE, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return CONFIG_TEMPLATE
 
 def save_config(data):
     print("🔧 Saving configuration...")

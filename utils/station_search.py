@@ -1,17 +1,15 @@
-import json
+from utils.variables import CLEANED_STATION_CODES
 
-STATION_FILE = "utils/cleaned_station_codes.json"
 
 def load_station_data():
     try:
-        with open(STATION_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            unique = {}
-            for station in data:
-                code = station.get("sc", "")
-                if code and code not in unique:
-                    unique[code] = station
-            return list(unique.values())
+        data = CLEANED_STATION_CODES
+        unique = {}
+        for station in data:
+            code = station.get("sc", "")
+            if code and code not in unique:
+                unique[code] = station
+        return list(unique.values())
     except Exception as e:
         print("❌ Error loading station file:", e)
         return []

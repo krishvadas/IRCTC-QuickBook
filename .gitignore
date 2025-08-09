@@ -15,9 +15,10 @@ test.py
 # 🧪 IDE/editor configs
 .idea/
 .github
+output
+upx
 build
 dist
-output
 
 # 📄 Logs, temp files, and misc
 *.log
