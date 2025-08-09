@@ -1,17 +1,10 @@
-import os
+import platform
 import socket
 import subprocess
 import time
 from threading import Thread
-
 from playwright.sync_api import sync_playwright, Browser, BrowserContext, Page
-
-from utils.variables import js_filter
-
-# 🚀 Configuration
-CHROME_PATH = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-USER_DATA_DIR = os.getcwd() + "/.chrome/user_profile"
-DEBUG_URL = "http://localhost:9222"
+from utils.variables import js_filter, LINUX_CHROME_PATH, USER_DATA_DIR, DEBUG_URL, WINDOWS_CHROME_PATH
 
 # 🔄 Persistent instances
 _playwright = None
@@ -28,9 +21,10 @@ def is_chrome_running() -> bool:
 
 
 def launch_chrome():
-    print("⚡ Launching Chrome (via cmd)...")
-    subprocess.Popen([
-        "cmd.exe", "/c", "start", "", CHROME_PATH,
+    print("🔍 Launching Chrome...")
+    def get_args(path):
+        return [
+        path,
         "--remote-debugging-port=9222",
         f"--user-data-dir={USER_DATA_DIR}",
         "--disable-popup-blocking",
@@ -39,10 +33,21 @@ def launch_chrome():
         "--start-maximized",
         "--new-window",
         "--enable-features=NetworkService,NetworkServiceInProcess"
-    ],
-    stdout=subprocess.DEVNULL,
-    stderr=subprocess.DEVNULL,
-    shell=True)
+        ]
+
+    if platform.system() == "Windows":
+        subprocess.Popen([
+            "cmd.exe", "/c", "start", "", *get_args(WINDOWS_CHROME_PATH)
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        shell=True)
+    else:
+        subprocess.Popen(
+            get_args(LINUX_CHROME_PATH),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
 
 
 def wait_for_chrome(timeout_sec=5) -> bool:

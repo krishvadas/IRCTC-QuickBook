@@ -1,3 +1,10 @@
+import os
+
+LINUX_CHROME_PATH = "/usr/bin/google-chrome"
+WINDOWS_CHROME_PATH = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+USER_DATA_DIR = os.getcwd() + "/.chrome/user_profile"
+DEBUG_URL = "http://localhost:9222"
+
 CLASS_CODE_MAP = {
     "Anubhuti Class (EA)": "EA", "AC First Class (1A)": "1A", "Vistadome AC (EV)": "EV",
     "Exec. Chair Car (EC)": "EC", "AC 2 Tier (2A)": "2A", "First Class (FC)": "FC",
