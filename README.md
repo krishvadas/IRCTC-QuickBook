@@ -12,6 +12,13 @@ Ultra-fast, GUI-driven automation tool for booking Indian Railways tickets via I
 
 ---
 
+## Download
+- ⏬ Click [here](https://github.com/krishvadas/IRCTC-QuickBook/releases/download/1.1.0/IRCTC.QuickBook.exe) to download the latest version.
+- ✅ Place the file inside a new folder and run
+#### Note : If you're running for the first time, its takes a few minutes to initialize properly. 
+
+---
+
 ## 🛠️ Setup
 
 ### 1. Clone the repo
