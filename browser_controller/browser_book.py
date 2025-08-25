@@ -1,13 +1,13 @@
 from browser_controller.browser_login import automate_login, load_irctc_homepage
 from browser_controller.browser_search import click_selected_class_stable, fill_train_search_form
 from browser_controller.browser_session import start_browser_session
-from browser_controller.browser_utils import solve_captcha
+from browser_controller.browser_utils import solve_captcha, is_loading, wait_for_loading
 
 
 def book_tickets(train_number, data, page=None, retry_count = 4):
     if page is None:
         page = start_browser_session()
-    if 'pgui' not in page.url:
+    if 'pgui' not in page.url and not is_loading(page):
         load_irctc_homepage(page)
     for attempt in range(retry_count):
         if attempt > 1:
@@ -16,20 +16,25 @@ def book_tickets(train_number, data, page=None, retry_count = 4):
         try:
             page.set_default_timeout(2000)
             automate_login(page, data["username"], data["password"])
+            wait_for_loading(page)
             if 'train-search' in page.url:
                 fill_train_search_form(page, data['source'], data['destination'], data['date'], data['coach'], data['quota'])
+                wait_for_loading(page)
             if "train-list" in page.url:
                 if not page.locator(f'text=({train_number})').count()>0:
                     fill_train_search_form(page, data['source'], data['destination'], data['date'], data['coach'], data['quota'])
+                    wait_for_loading(page)
                     page.wait_for_selector("app-train-avl-enq", state='attached', timeout=40000)
                 if not click_selected_class_stable(train_number, data['coach'], data["date"], data["quota"], page):
                     print("❌ Booking interrupted")
                     continue
                 page.set_default_timeout(2000)
+                wait_for_loading(page)
                 page.wait_for_selector('text="+ Add Passenger"', timeout=60000)
                 print("✅ Train selected")
             if "psgninput" in page.url:
                 passenger_entry_and_book(page, data)
+                wait_for_loading(page)
                 page.wait_for_selector("input[formcontrolname='captcha']", timeout=40000)
                 print("✅ Added all passengers successfully")
             if "reviewBooking" in page.url:
@@ -38,12 +43,16 @@ def book_tickets(train_number, data, page=None, retry_count = 4):
                         if page.locator("input[formcontrolname='captcha']").count() > 0:
                             solve_captcha(page)
                             continue_click(page)
+                            wait_for_loading(page)
                         if page.locator("text='Invalid Captcha").count() > 0:
                             solve_captcha(page)
                             continue_click(page)
+                            wait_for_loading(page)
                     except:
                         break
+                wait_for_loading(page)
                 page.wait_for_selector("text='Payment Methods'", state='attached', timeout=40000)
+
                 print("✅ Entering payment page")
             if 'payment' in page.url:
                 pay_and_book_click(page)

@@ -3,6 +3,7 @@ from datetime import datetime
 import datetime as d
 from playwright.sync_api import Page
 
+from browser_controller.browser_utils import wait_for_loading, is_loading
 from utils.variables import AC_COACH, CLASS_CODE_MAP
 
 
@@ -53,28 +54,30 @@ def fill_train_search_form(
         except Exception as e:
             log("To station", to_station_local, False, e)
 
-    def journey_date_and_search(travel_date_local, retry_limit = 2):
-        for attempt in range(retry_limit):
-            print(f"✅ Entering journey date: {travel_date_local}")
+    def journey_date_entry_and_search(travel_date_local):
+        print(f"✅ Entering journey date: {travel_date_local}")
+        try:
+            date_input = page.locator("[formcontrolname='journeyDate'] input[type='text']")
             try:
-                date_input = page.locator("[formcontrolname='journeyDate'] input[type='text']")
-                try:
-                    date_input.nth(0).clear()
-                    date_input.nth(0).type(travel_date_local)
-                    page.wait_for_timeout(300)
+                date_input.nth(0).clear()
+                date_input.nth(0).type(travel_date_local)
+                page.wait_for_timeout(300)
+                if travel_date_local == date_input.nth(0).input_value():
                     date_input.nth(0).press("Enter")
-                except Exception as e:
-                    date_input.nth(1).clear()
-                    date_input.nth(1).type(travel_date_local)
-                    page.wait_for_timeout(300)
-                    date_input.nth(1).press("Enter")
-                log("Journey date", travel_date_local, True)
-                if 'train-list' in page.url:
-                    return
+                else:
+                    journey_date_entry_and_search(travel_date_local)
             except Exception as e:
-                log("Journey date", travel_date_local, False, e)
-                return
-        return
+                date_input.nth(1).clear()
+                date_input.nth(1).type(travel_date_local)
+                page.wait_for_timeout(300)
+                if travel_date_local == date_input.nth(0).input_value():
+                    date_input.nth(1).press("Enter")
+                else:
+                    journey_date_entry_and_search(travel_date_local)
+            log("Journey date", travel_date_local, True)
+        except Exception as e:
+            log("Journey date", travel_date_local, False, e)
+            return
 
     def class_selection(journey_class_local):
         try:
@@ -114,13 +117,12 @@ def fill_train_search_form(
             log("Quota selection", journey_quota_local, False, e)
 
 
-
     def search():
         from_entry(from_station)
         to_station_fun(to_station)
         class_selection(journey_class)
         quota_selection(journey_quota)
-        journey_date_and_search(travel_date)
+        journey_date_entry_and_search(travel_date)
 
     search()
 
@@ -149,6 +151,7 @@ def click_selected_class_stable(train_number, class_code, date, quota, page:Page
                         print("🚫 Book Button is disabled")
                     else:
                         book_button.click()
+                        wait_for_loading(page)
                         page.wait_for_selector("app-passenger", timeout=10000)
                         return True
                 return False
@@ -167,17 +170,21 @@ def select_class(class_code, formatted_date, page, train_block):
     try:
         seat_select = train_block.locator(f"text='{class_code}'")
         seat_select.click()
+        wait_for_loading(page)
         print("✅ Class selected successfully")
         seat_select = train_block.locator(f"div.pre-avl:has-text('{formatted_date}')")
         seat_select.click()
+        wait_for_loading(page)
     # Locate class blocks using visible class name
     except Exception as e:
         seat_select = train_block.locator(f"text='{CLASS_CODE_MAP.get(class_code)}'")
         seat_select.click()
+        wait_for_loading(page)
         print("✅ Class selected successfully")
         page.set_default_timeout(10000)
         seat_select = train_block.locator(f"div.pre-avl:has-text('{formatted_date}')")
         seat_select.click()
+        wait_for_loading(page)
         print("✅ Travel date selected successfully")
         page.set_default_timeout(2000)
     book_button = train_block.locator("button.btnDefault.train_Search:has-text('Book Now')")

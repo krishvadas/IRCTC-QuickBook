@@ -203,7 +203,16 @@ class IRCTCLauncher(ctk.CTk):
             "train_number": self.train_number_entry.get(),
             "saved_passengers": self.passenger_manager.get_data()
         }
+        show = {
+            "source": self.source.get(),
+            "date": self.date_corrector(self.date_entry.get() or datetime.today().strftime("%d/%m/%Y")),
+            "destination": self.dest.get(),
+            "coach": self.coach_type.get(),
+            "quota": self.quota_type.get(),
+            "train_number": self.train_number_entry.get(),
+            "saved_passengers": self.passenger_manager.get_data()
+        }
         print("\n🎯 Booking Launcher Input:")
-        print(json.dumps(data, indent=4))
+        print(json.dumps(show, indent=4))
         save_config(data)
         book_tickets(train_number, data, self.page)

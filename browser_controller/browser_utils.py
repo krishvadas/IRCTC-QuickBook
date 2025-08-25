@@ -1,4 +1,6 @@
 import base64
+import time
+
 import numpy as np
 from paddleocr import PaddleOCR
 from PIL import Image, ImageFilter
@@ -87,3 +89,22 @@ def solve_captcha(page, input_selector="input[formcontrolname='captcha']"):
     except Exception as e:
         print(f"❌ CAPTCHA solving failed: {e}")
     return None
+
+
+def is_loading(page):
+    try:
+        if page.locator('#loaderP').count() > 0:
+            return True
+        else:
+            return False
+    except:
+        return False
+
+def wait_for_loading(page):
+    for second in range(60):
+        if not is_loading(page):
+            break
+        if is_loading(page):
+            print("⌛ Page is loading, please wait")
+            time.sleep(1)
+

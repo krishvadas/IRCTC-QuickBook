@@ -1,7 +1,7 @@
 import time
 import warnings
 from .browser_session import start_browser_session
-from .browser_utils import solve_captcha
+from .browser_utils import solve_captcha, wait_for_loading
 
 warnings.filterwarnings("ignore", message=".*pin_memory.*", category=UserWarning)
 
@@ -87,8 +87,7 @@ def automate_login(page, username_text, password_text):
         print(f"🔐 CAPTCHA attempt {attempt + 1} of {MAX_CAPTCHA_ATTEMPTS}")
         solve_captcha(page)
         submit_login_form(page)
-        time.sleep(2)  # wait briefly for modal state to update
-
+        wait_for_loading(page)
         if not is_login_modal_open(page):
             print("✅ Login successful, modal closed")
             break
