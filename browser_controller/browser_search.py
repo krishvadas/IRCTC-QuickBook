@@ -70,7 +70,7 @@ def fill_train_search_form(
                 date_input.nth(1).clear()
                 date_input.nth(1).type(travel_date_local)
                 page.wait_for_timeout(300)
-                if travel_date_local == date_input.nth(0).input_value():
+                if travel_date_local == date_input.nth(1).input_value():
                     date_input.nth(1).press("Enter")
                 else:
                     journey_date_entry_and_search(travel_date_local)

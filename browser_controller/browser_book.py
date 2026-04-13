@@ -81,7 +81,7 @@ def passenger_entry_and_book(page, data):
             page.click('text="+ Add Passenger"')
             # pass
         fill_passenger_fields(page, i, passenger)
-    page.click('text="Consider for Auto Upgradation."')
+    page.click('text="Consider for Auto Upgradation "')
     try:
         upi_label = page.locator("label", has_text="Pay through BHIM/UPI")
         upi_label.locator("div[role='radio']").click()
