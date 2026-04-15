@@ -83,15 +83,21 @@ def automate_login(page, username_text, password_text):
         return
 
     # 🧩 CAPTCHA retry loop based on modal visibility
-    for attempt in range(MAX_CAPTCHA_ATTEMPTS):
-        print(f"🔐 CAPTCHA attempt {attempt + 1} of {MAX_CAPTCHA_ATTEMPTS}")
-        solve_captcha(page)
+    if page.locator("input[formcontrolname='captcha']").count() > 0:
+        for attempt in range(MAX_CAPTCHA_ATTEMPTS):
+            print(f"🔐 CAPTCHA attempt {attempt + 1} of {MAX_CAPTCHA_ATTEMPTS}")
+            solve_captcha(page)
+            submit_login_form(page)
+            wait_for_loading(page)
+            if not is_login_modal_open(page):
+                print("✅ Login successful, modal closed")
+                break
+            elif attempt == MAX_CAPTCHA_ATTEMPTS - 1:
+                page.locator("a.loginCloseBtn").click()
+                automate_login(page, username_text, password_text)
+    else:
+        print("🔐 No CAPTCHA found, Attempting login.")
         submit_login_form(page)
         wait_for_loading(page)
         if not is_login_modal_open(page):
             print("✅ Login successful, modal closed")
-            break
-        elif attempt == MAX_CAPTCHA_ATTEMPTS - 1:
-            page.locator("a.loginCloseBtn").click()
-            automate_login(page, username_text, password_text)
-

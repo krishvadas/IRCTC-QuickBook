@@ -1,26 +1,24 @@
 import base64
-import time
-
 import numpy as np
-from paddleocr import PaddleOCR
 from PIL import Image, ImageFilter
 from io import BytesIO
-import os
 import logging
+import time
+import os
+from collections import Counter
+import sys
+import contextlib
+import io
 
-# Disable PaddleOCR's internal logger before it initializes
-logging.getLogger("ppocr").disabled = True
+import easyocr
 
-# Load models from project directory
-base_dir = os.path.abspath("utils/paddleocr_models")
-ocr = PaddleOCR(
-    use_angle_cls=True,
-    lang='en',
-    use_gpu=False,
-    det_model_dir=os.path.join(base_dir, "det"),
-    rec_model_dir=os.path.join(base_dir, "rec"),
-    cls_model_dir=os.path.join(base_dir, "cls")
-)
+# Disable verbose logging
+logging.getLogger("easyocr").disabled = True
+
+# Suppress EasyOCR startup prints (stdout + stderr)
+f_out, f_err = io.StringIO(), io.StringIO()
+with contextlib.redirect_stdout(f_out), contextlib.redirect_stderr(f_err):
+    reader = easyocr.Reader(['en'], gpu=False)
 
 # Progressive preprocessing pipeline
 def preprocess_image(img, level=0):
@@ -38,44 +36,40 @@ def preprocess_image(img, level=0):
 
 def clean_text(text):
     corrections = {
-        "|": "J",  # PaddleOCR often mistakes J as |
+        "|": "J",  # OCR often mistakes J as |
         # Add more as needed
     }
     return "".join(corrections.get(c, c) for c in text)
 
 
-# OCR with confidence-based retry
+# OCR with majority vote across attempts
 def recognize_captcha(src, max_attempts=5):
     try:
         image_bytes = base64.b64decode(src.split(",")[1])
         img = Image.open(BytesIO(image_bytes)).convert("RGB")
 
-        best_text = ""
-        best_conf = 0.0
+        candidates = []
 
         for attempt in range(max_attempts):
             processed = preprocess_image(img, level=attempt)
-            result = ocr.ocr(np.array(processed), cls=True)
+            # detail=0 returns just text strings
+            result = reader.readtext(np.array(processed), detail=0)
 
-            if result and result[0]:
-                text, confidence = result[0][0][1]
-                print(f"🔍 Attempt {attempt + 1}: {text} (Confidence: {confidence:.2f})")
+            if result:
+                combined_text = "".join(result).strip()
+                print(f"🔍 Attempt {attempt + 1}: {combined_text}")
+                candidates.append(combined_text)
 
-                if confidence > best_conf:
-                    best_text = text
-                    best_conf = confidence
+        if candidates:
+            # Majority vote: pick the most frequent candidate
+            final_text = Counter(candidates).most_common(1)[0][0]
+            return clean_text(final_text.replace(" ", "").strip())
 
-                if confidence >= 0.98:
-                    print("🎯 Confidence threshold met — exiting early")
-                    break
-
-        if best_text:
-            return clean_text(best_text.replace(" ", "").strip())
-
-        print("⚠️ OCR failed to reach 100% confidence")
+        print("⚠️ OCR failed to produce any text")
     except Exception as e:
         print(f"⚠️ OCR exception: {e}")
     return ""
+
 
 # Playwright integration
 def solve_captcha(page, input_selector="input[formcontrolname='captcha']"):
@@ -100,6 +94,7 @@ def is_loading(page):
     except:
         return False
 
+
 def wait_for_loading(page):
     for second in range(60):
         if not is_loading(page):
@@ -107,4 +102,3 @@ def wait_for_loading(page):
         if is_loading(page):
             print("⌛ Page is loading, please wait")
             time.sleep(1)
-
