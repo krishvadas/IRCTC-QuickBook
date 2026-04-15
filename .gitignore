@@ -11,6 +11,7 @@ test.py
 installer.bat
 TatkalBooker.spec
 icon.ico
+IRCTC.Quickbook.spec
 
 # 🧠 OCR models and session data
 .chrome/
@@ -29,7 +30,7 @@ dist
 *.bak
 *.swp
 *.orig
-main.spec
+*.spec
 
 # 🖼️ OS-specific
 .DS_Store
